@@ -2,9 +2,17 @@
 <html>
 <head>
 <style>
-    body { text-align: center; font-family: sans-serif; background: #222; color: #fff; }
+    body { 
+        text-align: center; 
+        font-family: sans-serif; 
+        background: #222; 
+        color: #fff; 
+        background-size: cover; 
+        background-position: center; 
+        transition: background 0.5s ease; 
+    }
     #grid { display: grid; grid-template-columns: repeat(6, 80px); gap: 10px; justify-content: center; margin-top: 20px; }
-    .tile { width: 80px; height: 80px; background: #555; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .tile { width: 80px; height: 80px; background: #555; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; }
     .tile.flipped { background: #fff; color: #000; }
 </style>
 </head>
@@ -38,14 +46,16 @@
                 if (document.querySelectorAll('.flipped').length === grid.children.length) nextStage();
             } else {
                 mistakes++;
-                if (mistakes >= 3) { alert("Game Over! IQ: " + (100 + (stage * 5))); location.reload(); }
+                if (mistakes >= 3) { alert("Game Over! Final IQ Rating: " + (100 + (stage * 5))); location.reload(); }
                 setTimeout(() => { flipped.forEach(t => { t.classList.remove('flipped'); t.innerText = ''; }); flipped = []; lock = false; }, 1000);
             }
         }
     }
 
     function nextStage() {
-        alert("Stage Complete! Reward: " + stage + ".png");
+        alert("Stage " + stage + " Complete!");
+        // Update background to the image corresponding to the completed stage
+        document.body.style.backgroundImage = `url('${stage}.png')`;
         stage++;
         if (stage > 10) { alert("You won! Final IQ: 200"); location.reload(); }
         else { document.getElementById('status').innerText = "Stage " + stage; initStage(); }
