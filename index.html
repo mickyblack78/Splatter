@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+    body { text-align: center; font-family: sans-serif; background: #222; color: #fff; }
+    #grid { display: grid; grid-template-columns: repeat(6, 80px); gap: 10px; justify-content: center; margin-top: 20px; }
+    .tile { width: 80px; height: 80px; background: #555; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .tile.flipped { background: #fff; color: #000; }
+</style>
+</head>
+<body>
+    <h2 id="status">Stage 1: Find the Pairs</h2>
+    <div id="grid"></div>
+<script>
+    let stage = 1, mistakes = 0, flipped = [], lock = false;
+    const grid = document.getElementById('grid');
+    
+    function initStage() {
+        grid.innerHTML = ''; flipped = []; lock = false;
+        let pairs = 10 + (stage * 2);
+        let tiles = [...Array(pairs).keys(), ...Array(pairs).keys()].sort(() => Math.random() - 0.5);
+        tiles.forEach(val => {
+            let div = document.createElement('div');
+            div.className = 'tile'; div.dataset.val = val;
+            div.onclick = () => flip(div);
+            grid.appendChild(div);
+        });
+    }
+
+    function flip(tile) {
+        if (lock || tile.classList.contains('flipped')) return;
+        tile.classList.add('flipped'); tile.innerText = tile.dataset.val;
+        flipped.push(tile);
+        if (flipped.length === 2) {
+            lock = true;
+            if (flipped[0].dataset.val === flipped[1].dataset.val) {
+                flipped = []; lock = false;
+                if (document.querySelectorAll('.flipped').length === grid.children.length) nextStage();
+            } else {
+                mistakes++;
+                if (mistakes >= 3) { alert("Game Over! IQ: " + (100 + (stage * 5))); location.reload(); }
+                setTimeout(() => { flipped.forEach(t => { t.classList.remove('flipped'); t.innerText = ''; }); flipped = []; lock = false; }, 1000);
+            }
+        }
+    }
+
+    function nextStage() {
+        alert("Stage Complete! Reward: " + stage + ".png");
+        stage++;
+        if (stage > 10) { alert("You won! Final IQ: 200"); location.reload(); }
+        else { document.getElementById('status').innerText = "Stage " + stage; initStage(); }
+    }
+
+    initStage();
+</script>
+</body>
+</html>
