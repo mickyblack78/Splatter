@@ -3,16 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Square Resizer</title>
+    <title>SQUARED</title>
+    <style>
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        img { max-width: 300px; margin: 20px 0; border: 1px solid #ccc; }
+        .controls { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 300px; }
+    </style>
 </head>
 <body>
 
+    <h2>Image Processor</h2>
     <input type="file" id="upload" accept="image/*">
-    <br><br>
-    <input type="text" id="fileName" placeholder="Enter file name">
-    <button id="saveBtn">Save as PNG</button>
-    <br><br>
-    <img id="preview" style="max-width:300px;">
+    <img id="preview" src="" alt="Preview">
+    
+    <div class="controls">
+        <input type="text" id="fileName" placeholder="Enter file name">
+        <button id="btnSquare">Square (Best Fit)</button>
+        <button id="btn420">Resize to 420x420</button>
+        <hr>
+        <button id="saveBtn" disabled>Save PNG</button>
+    </div>
     <canvas id="canvas" style="display:none;"></canvas>
 
     <script>
@@ -21,23 +31,36 @@
         const canvas = document.getElementById('canvas');
         const saveBtn = document.getElementById('saveBtn');
         const fileNameInput = document.getElementById('fileName');
+        const btnSquare = document.getElementById('btnSquare');
+        const btn420 = document.getElementById('btn420');
         let img = new Image();
 
         upload.addEventListener('change', (e) => {
             const reader = new FileReader();
             reader.onload = (event) => {
-                img.onload = () => {
-                    // Resizing to square: forcing width and height to match 
-                    // This will change the aspect ratio to force a square
-                    canvas.width = 1000;
-                    canvas.height = 1000;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, 1000, 1000);
-                    preview.src = canvas.toDataURL('image/png');
-                };
+                img.onload = () => { preview.src = img.src; };
                 img.src = event.target.result;
             };
             reader.readAsDataURL(e.target.files[0]);
+        });
+
+        btnSquare.addEventListener('click', () => {
+            const size = Math.max(img.width, img.height);
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = "white";
+            ctx.fillRect(0, 0, size, size);
+            ctx.drawImage(img, (size - img.width) / 2, (size - img.height) / 2);
+            saveBtn.disabled = false;
+        });
+
+        btn420.addEventListener('click', () => {
+            canvas.width = 420;
+            canvas.height = 420;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, 420, 420);
+            saveBtn.disabled = false;
         });
 
         saveBtn.addEventListener('click', () => {
