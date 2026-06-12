@@ -1,66 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Square Resizer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-
-    <input type="file" id="upload" accept="image/*">
-    <br>
-    <img id="preview" style="max-width:300px;">
-    <br>
-    <input type="text" id="fileName" placeholder="File Name">
-    <br>
-    <button id="btnSquare">Make Square</button>
-    <button id="btn420">Make 420x420 Square</button>
-    <button id="saveBtn" disabled>Save</button>
-    
-    <canvas id="canvas" style="display:none;"></canvas>
-
-    <script>
-        const upload = document.getElementById('upload');
-        const preview = document.getElementById('preview');
-        const canvas = document.getElementById('canvas');
-        const saveBtn = document.getElementById('saveBtn');
-        const fileName = document.getElementById('fileName');
-        const btnSquare = document.getElementById('btnSquare');
-        const btn420 = document.getElementById('btn420');
-        let img = new Image();
-
-        upload.addEventListener('change', (e) => {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                img.onload = () => { preview.src = img.src; };
-                img.src = event.target.result;
-            };
-            reader.readAsDataURL(e.target.files[0]);
-        });
-
-        // Option 1: Makes it a square (stretches to 500x500)
-        btnSquare.addEventListener('click', () => {
-            canvas.width = 500;
-            canvas.height = 500;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, 500, 500);
-            saveBtn.disabled = false;
-        });
-
-        // Option 2: Makes it a 420x420 square (stretches to 420x420)
-        btn420.addEventListener('click', () => {
-            canvas.width = 420;
-            canvas.height = 420;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, 420, 420);
-            saveBtn.disabled = false;
-        });
-
-        saveBtn.addEventListener('click', () => {
-            const link = document.createElement('a');
-            link.download = (fileName.value || 'image') + '.png';
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-        });
-    </script>
+<input type="file" id="u" accept="image/*" style="font-size:20px; display:block; margin:20px;">
+<button onclick="r(i.naturalWidth > i.naturalHeight ? i.naturalWidth : i.naturalHeight)" style="font-size:20px; padding:15px;">Square</button>
+<button onclick="r(420)" style="font-size:20px; padding:15px;">420 Square</button>
+<canvas id="c" style="display:none"></canvas>
+<script>
+let i = new Image(), c = document.getElementById('c'), x = c.getContext('2d');
+document.getElementById('u').onchange = (e) => {
+    let r = new FileReader();
+    r.onload = (ev) => { i.src = ev.target.result; };
+    r.readAsDataURL(e.target.files[0]);
+};
+function r(s) {
+    c.width = s; c.height = s;
+    x.drawImage(i, 0, 0, s, s);
+    let l = document.createElement('a');
+    l.download = 'image.png'; l.href = c.toDataURL('image/png'); l.click();
+}
+</script>
 </body>
 </html>
