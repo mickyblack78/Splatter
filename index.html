@@ -5,21 +5,25 @@
 </head>
 <body>
 <input type="file" id="u" accept="image/*" style="font-size:20px; display:block; margin:20px;">
+<input type="text" id="n" placeholder="Enter filename" style="font-size:20px; margin:20px;">
+<img id="p" style="max-width:100%; display:block; margin:10px;">
 <button onclick="r(i.naturalWidth > i.naturalHeight ? i.naturalWidth : i.naturalHeight)" style="font-size:20px; padding:15px;">Square</button>
 <button onclick="r(420)" style="font-size:20px; padding:15px;">420 Square</button>
 <canvas id="c" style="display:none"></canvas>
 <script>
-let i = new Image(), c = document.getElementById('c'), x = c.getContext('2d');
+let i = new Image(), c = document.getElementById('c'), x = c.getContext('2d'), p = document.getElementById('p');
 document.getElementById('u').onchange = (e) => {
     let r = new FileReader();
-    r.onload = (ev) => { i.src = ev.target.result; };
+    r.onload = (ev) => { i.src = ev.target.result; p.src = ev.target.result; };
     r.readAsDataURL(e.target.files[0]);
 };
 function r(s) {
     c.width = s; c.height = s;
     x.drawImage(i, 0, 0, s, s);
-    let l = document.createElement('a');
-    l.download = 'image.png'; l.href = c.toDataURL('image/png'); l.click();
+    let l = document.createElement('a'), n = document.getElementById('n').value || 'image';
+    l.download = n + '.png'; 
+    l.href = c.toDataURL('image/png'); 
+    l.click();
 }
 </script>
 </body>
