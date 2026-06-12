@@ -3,24 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Square Image Resizer</title>
-    <style>
-        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; }
-        #canvas { display: none; }
-        img { max-width: 100%; margin: 20px 0; border: 1px solid #ccc; }
-        .controls { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 300px; }
-    </style>
+    <title>Square Resizer</title>
 </head>
 <body>
 
-    <h2>Image to Square</h2>
     <input type="file" id="upload" accept="image/*">
-    <div class="controls">
-        <input type="text" id="fileName" placeholder="Enter file name (e.g. photo1)">
-        <button id="saveBtn" disabled>Save as PNG</button>
-    </div>
-    <img id="preview" src="" alt="Preview">
-    <canvas id="canvas"></canvas>
+    <br><br>
+    <input type="text" id="fileName" placeholder="Enter file name">
+    <button id="saveBtn">Save as PNG</button>
+    <br><br>
+    <img id="preview" style="max-width:300px;">
+    <canvas id="canvas" style="display:none;"></canvas>
 
     <script>
         const upload = document.getElementById('upload');
@@ -28,22 +21,19 @@
         const canvas = document.getElementById('canvas');
         const saveBtn = document.getElementById('saveBtn');
         const fileNameInput = document.getElementById('fileName');
+        let img = new Image();
 
         upload.addEventListener('change', (e) => {
             const reader = new FileReader();
             reader.onload = (event) => {
-                const img = new Image();
                 img.onload = () => {
-                    const size = Math.min(img.width, img.height);
-                    canvas.width = size;
-                    canvas.height = size;
+                    // Resizing to square: forcing width and height to match 
+                    // This will change the aspect ratio to force a square
+                    canvas.width = 1000;
+                    canvas.height = 1000;
                     const ctx = canvas.getContext('2d');
-                    // Draw image centered in the square
-                    const offsetX = (img.width - size) / 2;
-                    const offsetY = (img.height - size) / 2;
-                    ctx.drawImage(img, offsetX, offsetY, size, size, 0, 0, size, size);
+                    ctx.drawImage(img, 0, 0, 1000, 1000);
                     preview.src = canvas.toDataURL('image/png');
-                    saveBtn.disabled = false;
                 };
                 img.src = event.target.result;
             };
